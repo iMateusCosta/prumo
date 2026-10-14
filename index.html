@@ -1,0 +1,1040 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2349D6">
+<meta name="color-scheme" content="light dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Prumo">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Prumo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: caderno de bordo. Uma coluna, cabeçalho fixo, barra de abas embaixo, formulários em folhas que sobem. */
+:root{
+  --bg:#EEF1F5; --surface:#FFFFFF; --surface2:#E5EAF2; --ink:#131B2E; --ink2:#4A5670; --ink3:#76829B; --line:#D5DBE7;
+  --accent:#2349D6; --accent-ink:#FFFFFF; --accent-soft:#DDE5FB; --signal:#C9870B; --good:#1B7F55; --bad:#BC3B35;
+  --f-display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --f-body:"Instrument Sans","Segoe UI",system-ui,-apple-system,sans-serif;
+  --f-mono:"DM Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r:14px; --tab-h:62px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0D1220; --surface:#151C30; --surface2:#1E2742; --ink:#E8ECF7; --ink2:#A5B0CB; --ink3:#7280A0; --line:#27315A;
+  --accent:#7C97FF; --accent-ink:#0D1220; --accent-soft:#1F2C62; --signal:#F2B84B; --good:#4CC38A; --bad:#F0766F; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0D1220; --surface:#151C30; --surface2:#1E2742; --ink:#E8ECF7; --ink2:#A5B0CB; --ink3:#7280A0; --line:#27315A;
+  --accent:#7C97FF; --accent-ink:#0D1220; --accent-soft:#1F2C62; --signal:#F2B84B; --good:#4CC38A; --bad:#F0766F; color-scheme:dark}
+
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:0 calc(var(--tab-h) + 24px);-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3{font-family:var(--f-display);margin:0;font-weight:700;text-wrap:balance;letter-spacing:-.01em}
+p{margin:0}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--ink2)} .faint{color:var(--ink3)}
+.eyebrow{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3);font-weight:600}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+
+#top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);margin-inline:-16px;padding:12px 16px 10px;
+  display:flex;align-items:flex-end;justify-content:space-between;gap:12px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  margin-left:calc(-1 * max(16px,env(safe-area-inset-left,0px)));margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px)))}
+#top h1{font-size:26px;line-height:1.1}
+#top .sub{font-size:13px;color:var(--ink2);margin-top:2px}
+.iconbtn{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;cursor:pointer;flex:none}
+.iconbtn svg{width:20px;height:20px}
+main{display:flex;flex-direction:column;gap:14px;padding-top:6px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 14px 15px;min-width:0}
+.card.flat{border:0;background:transparent;padding:0}
+.card h2{font-size:17px}
+.card-h{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.stack{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;align-items:center;gap:10px;min-width:0}
+.row.top{align-items:flex-start}
+.grow{flex:1;min-width:0}
+.sp{justify-content:space-between}
+.wrapr{flex-wrap:wrap}
+.t-ellip{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.btn{border:0;border-radius:12px;padding:11px 16px;font-weight:600;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn.ghost{background:var(--surface2);color:var(--ink)}
+.btn.line{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.btn.danger{background:transparent;color:var(--bad);border:1px solid var(--line)}
+.btn.sm{padding:7px 12px;min-height:34px;font-size:13.5px;border-radius:10px}
+.btn.block{width:100%}
+.btn:disabled{opacity:.45;cursor:default}
+.btn svg{width:18px;height:18px}
+.linkbtn{background:none;border:0;color:var(--accent);font-weight:600;cursor:pointer;padding:4px 0}
+
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 11px;font-size:13px;background:var(--surface2);color:var(--ink2);border:1px solid transparent;cursor:pointer}
+.chip.on{background:var(--accent-soft);color:var(--accent);border-color:var(--accent);font-weight:600}
+.chip svg{width:14px;height:14px}
+.badge{font-size:11.5px;font-weight:600;border-radius:999px;padding:2px 9px;background:var(--surface2);color:var(--ink2)}
+.badge.good{background:color-mix(in srgb,var(--good) 16%,var(--surface));color:var(--good)}
+.badge.bad{background:color-mix(in srgb,var(--bad) 14%,var(--surface));color:var(--bad)}
+.badge.acc{background:var(--accent-soft);color:var(--accent)}
+
+.bar{height:8px;border-radius:99px;background:var(--surface2);overflow:hidden}
+.bar>i{display:block;height:100%;border-radius:99px;background:var(--accent);transition:width .35s}
+.bar.good>i{background:var(--good)}
+
+.check{width:26px;height:26px;border-radius:8px;border:2px solid var(--ink3);background:transparent;display:grid;place-items:center;cursor:pointer;flex:none;padding:0}
+.check svg{width:16px;height:16px;opacity:0;stroke:var(--accent-ink)}
+.check.on{background:var(--good);border-color:var(--good)}
+.check.on svg{opacity:1}
+.check.on{--accent-ink:#fff}
+
+.field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.field>label{font-size:12.5px;color:var(--ink2);font-weight:600}
+.inp{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:10px 12px;min-height:44px;font-size:16px}
+textarea.inp{min-height:84px;resize:vertical}
+.inp:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+
+.seg{display:flex;background:var(--surface2);border-radius:12px;padding:3px;gap:2px}
+.seg button{flex:1;border:0;background:transparent;border-radius:9px;padding:8px 6px;font-weight:600;color:var(--ink2);cursor:pointer;font-size:13.5px}
+.seg button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+
+#tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);
+  display:grid;grid-template-columns:repeat(6,1fr);
+  padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+#tabs button{border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;color:var(--ink3);cursor:pointer;font-size:10.5px;font-weight:600;border-radius:10px;min-width:0}
+#tabs button svg{width:22px;height:22px}
+#tabs button.on{color:var(--accent)}
+#tabs button.on span{color:var(--ink)}
+
+/* hoje */
+.hero{padding:16px;display:flex;flex-direction:column;gap:12px}
+.hero.won{border-color:var(--good)}
+.hero .big{font-family:var(--f-display);font-size:24px;line-height:1.15;font-weight:700}
+.rule{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.rule:first-of-type{border-top:0}
+.ring{width:46px;height:46px;flex:none}
+.ring circle{fill:none;stroke-width:5}
+.ring .bg{stroke:var(--surface2)} .ring .fg{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset .4s}
+.ring.done .fg{stroke:var(--good)}
+.streak{display:inline-flex;align-items:center;gap:5px;color:var(--signal);font-weight:700;font-family:var(--f-mono);font-size:14px}
+.streak svg{width:17px;height:17px}
+.pledge{border:1px dashed var(--bad);border-radius:12px;padding:10px 12px;color:var(--bad);font-size:14px}
+.sample{background:var(--accent-soft);color:var(--ink);border-radius:var(--r);padding:12px 14px;display:flex;gap:12px;align-items:center;justify-content:space-between}
+.mood{display:flex;gap:6px}
+.mood button{flex:1;min-height:44px;border-radius:10px;border:1px solid var(--line);background:var(--bg);cursor:pointer;font-family:var(--f-mono);font-weight:500}
+.mood button.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+
+/* agenda */
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal .dow{font-size:11px;color:var(--ink3);text-align:center;padding:4px 0;font-weight:600}
+.cal button{aspect-ratio:1/1;border:0;border-radius:10px;background:transparent;color:var(--ink);cursor:pointer;position:relative;font-family:var(--f-mono);font-size:14px;padding:0;min-width:0}
+.cal button.out{color:var(--ink3);opacity:.55}
+.cal button.today{border:1.5px solid var(--accent)}
+.cal button.sel{background:var(--accent);color:var(--accent-ink)}
+.cal button i{position:absolute;bottom:5px;left:50%;width:5px;height:5px;border-radius:50%;background:var(--accent);transform:translateX(-50%)}
+.cal button.sel i{background:var(--accent-ink)}
+.ev{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--line)}
+.ev:first-child{border-top:0}
+.ev .time{font-family:var(--f-mono);font-size:13px;color:var(--ink2);width:46px;flex:none;padding-top:2px}
+.ev.done .ttl{text-decoration:line-through;color:var(--ink3)}
+
+/* metas */
+.goal .meta{display:flex;justify-content:space-between;font-size:13px;color:var(--ink2);margin-top:7px;gap:8px}
+
+/* leitura */
+.timer{font-family:var(--f-mono);font-size:46px;font-weight:500;letter-spacing:-.02em;text-align:center;padding:6px 0}
+.book{display:flex;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.book:first-child{border-top:0}
+.spine{width:10px;align-self:stretch;border-radius:3px;background:var(--accent);flex:none;min-height:38px}
+
+/* treino */
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.week div{border-radius:10px;background:var(--surface2);padding:7px 0 6px;text-align:center;font-size:11px;color:var(--ink2);min-width:0}
+.week div b{display:block;font-family:var(--f-mono);font-size:13px;color:var(--ink);font-weight:500}
+.week div.on{background:var(--accent-soft);color:var(--accent)}
+.week div.on b{color:var(--accent)}
+.week div.today{outline:1.5px solid var(--accent)}
+.setrow{display:grid;grid-template-columns:26px 1fr 1fr 40px;gap:8px;align-items:center;margin-top:7px}
+.setrow .n{font-family:var(--f-mono);color:var(--ink3);text-align:center;font-size:13px}
+.setrow .inp{min-height:42px;padding:6px 8px;text-align:center;font-family:var(--f-mono)}
+.setrow .check{width:36px;height:36px;border-radius:10px}
+.pr{color:var(--signal);font-weight:700;font-size:12px}
+
+/* evolução */
+.heat{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;grid-template-rows:repeat(7,auto);gap:3px}
+.heat i{aspect-ratio:1/1;border-radius:3px;background:var(--surface2);display:block;min-width:0}
+.heat i.l1{background:color-mix(in srgb,var(--accent) 35%,var(--surface2))}
+.heat i.l2{background:color-mix(in srgb,var(--accent) 65%,var(--surface2))}
+.heat i.l3{background:var(--accent)}
+.heat i.fut{background:transparent;outline:1px dashed var(--line);outline-offset:-1px}
+.heat-wrap{display:flex;gap:8px;align-items:stretch}
+.heat-wrap .days{display:grid;grid-template-rows:repeat(7,1fr);gap:3px;font-size:10px;color:var(--ink3);font-family:var(--f-mono)}
+.heat-wrap .grid{flex:1;min-width:0}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.stat b{display:block;font-family:var(--f-display);font-size:28px;line-height:1.1;margin-top:2px}
+.stat small{color:var(--ink2);font-size:12.5px}
+svg.chart{width:100%;height:auto;display:block;overflow:visible}
+svg.chart text{font-family:var(--f-mono);font-size:10.5px;fill:var(--ink3)}
+.chart .grid{stroke:var(--line);stroke-width:1}
+.tt{margin-top:8px;font-family:var(--f-mono);font-size:12.5px;color:var(--ink2);min-height:18px}
+.cmp{display:grid;grid-template-columns:1fr auto auto;gap:6px 14px;font-size:14px;align-items:baseline}
+.cmp .h{font-size:11.5px;color:var(--ink3);text-align:right}
+.cmp .v{font-family:var(--f-mono);text-align:right}
+
+/* folhas */
+#sheet-root{position:fixed;inset:0;z-index:60;display:none}
+#sheet-root.open{display:block}
+.scrim{position:absolute;inset:0;background:rgba(8,12,24,.5)}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:92%;overflow:auto;background:var(--surface);border-radius:20px 20px 0 0;border:1px solid var(--line);
+  padding:16px max(16px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
+  display:flex;flex-direction:column;gap:14px;animation:up .22s ease-out;max-width:640px;margin-inline:auto}
+.sheet.full{height:92%}
+.sheet h2{font-size:20px}
+.grab{width:42px;height:4px;border-radius:9px;background:var(--line);margin:-4px auto 0}
+@keyframes up{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--tab-h) + 18px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;z-index:80;font-size:14px;max-width:86%;display:none}
+.empty{padding:22px 10px;text-align:center;color:var(--ink2)}
+.fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(var(--tab-h) + 16px + env(safe-area-inset-bottom,0px));z-index:25;width:56px;height:56px;border-radius:18px;border:0;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;box-shadow:0 6px 18px rgba(20,30,80,.28);cursor:pointer}
+.fab svg{width:26px;height:26px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="top"></header>
+  <main id="view"></main>
+</div>
+<nav id="tabs" aria-label="Seções"></nav>
+<div id="fabhost"></div>
+<div id="sheet-root" aria-live="polite"></div>
+<div id="toast" role="status"></div>
+<script>
+'use strict';
+/* ---------- utilidades ---------- */
+const $ = (s, r) => (r || document).querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = () => Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-3);
+const p2 = n => String(n).padStart(2, '0');
+const dkey = (d = new Date()) => d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate());
+const pk = k => { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d, 12); };
+const addDays = (k, n) => { const d = pk(k); d.setDate(d.getDate() + n); return dkey(d); };
+const diffDays = (a, b) => Math.round((pk(b) - pk(a)) / 864e5);
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const fmtLong = k => cap(pk(k).toLocaleDateString('pt-BR', {weekday: 'long', day: 'numeric', month: 'long'}));
+const fmtShort = k => pk(k).toLocaleDateString('pt-BR', {day: 'numeric', month: 'short'}).replace('.', '');
+const fmtDow = k => cap(pk(k).toLocaleDateString('pt-BR', {weekday: 'short'}).replace('.', ''));
+const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const DOW1 = ['D','S','T','Q','Q','S','S'];
+const DOW3 = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+const weekStart = k => { const d = pk(k); const w = (d.getDay() + 6) % 7; return addDays(k, -w); };
+const num = v => { const n = parseFloat(String(v).replace(',', '.')); return isFinite(n) ? n : 0; };
+const fmtN = (n, dec = 1) => (Math.round(n * 10 ** dec) / 10 ** dec).toLocaleString('pt-BR', {maximumFractionDigits: dec});
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+const IC = {
+  today: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/>',
+  agenda: '<rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+  goals: '<path d="M5.5 21V4M5.5 4.5h11l-2 4 2 4h-11"/>',
+  book: '<path d="M4 5.5C6.5 4.5 9.5 4.5 12 6c2.5-1.5 5.5-1.5 8-.5V19c-2.5-1-5.5-1-8 .5-2.5-1.5-5.5-1.5-8-.5z"/><path d="M12 6v13.5"/>',
+  gym: '<path d="M6.5 7v10M17.5 7v10M3.5 9.5v5M20.5 9.5v5M6.5 12h11"/>',
+  chart: '<path d="M3.5 19.5h17M6 15l4-4.5 3 3 5-6.5"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  gear: '<circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"/>',
+  flame: '<path d="M12 2.5c.5 3-1.5 4.5-3 6.5C7.5 11 7 12.7 7 14.2A5 5 0 0 0 12 19.5a5 5 0 0 0 5-5.3c0-2-1-3.5-2-4.7-.3 1.2-1 2-1.9 2.3.6-3.2-.3-6.5-1.1-9.3z" fill="currentColor" stroke="none"/>',
+  play: '<path d="M7.5 4.5v15l11.5-7.5z" fill="currentColor" stroke="none"/>',
+  pause: '<path d="M8 5v14M16 5v14"/>',
+  trash: '<path d="M4.5 7h15M9.5 7V4.5h5V7M6.5 7l1 13h9l1-13"/>',
+  left: '<path d="M14.5 5.5L8 12l6.5 6.5"/>',
+  right: '<path d="M9.5 5.5L16 12l-6.5 6.5"/>',
+  edit: '<path d="M4 20l1-4L16.5 4.5l3 3L8 19z"/>'
+};
+const icon = n => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + IC[n] + '</svg>';
+
+/* ---------- modelo de dados ---------- */
+const LS = 'prumo.v1';
+const DEF_TPL = () => [
+  {id: 'a', name: 'Peito e tríceps', ex: [{n: 'Supino reto', s: 4, r: 8}, {n: 'Supino inclinado', s: 3, r: 10}, {n: 'Crucifixo', s: 3, r: 12}, {n: 'Tríceps na corda', s: 3, r: 12}]},
+  {id: 'b', name: 'Costas e bíceps', ex: [{n: 'Puxada frontal', s: 4, r: 10}, {n: 'Remada curvada', s: 4, r: 8}, {n: 'Rosca direta', s: 3, r: 10}, {n: 'Rosca martelo', s: 3, r: 12}]},
+  {id: 'c', name: 'Pernas', ex: [{n: 'Agachamento', s: 4, r: 8}, {n: 'Leg press', s: 3, r: 12}, {n: 'Cadeira extensora', s: 3, r: 12}, {n: 'Mesa flexora', s: 3, r: 12}]}
+];
+function blank() {
+  return {
+    v: 1, updatedAt: 0, sample: false, tab: 'hoje',
+    settings: {name: '', pages: 10, minutes: 20, pledge: 'Se eu falhar hoje, doo R$ 20 e conto para um amigo.', gym: {1: 'a', 3: 'b', 5: 'c'}},
+    goals: [], events: [], books: [], reads: {}, templates: DEF_TPL(), workouts: [], weights: [],
+    habits: [{id: 'h1', t: 'Água 2 L'}, {id: 'h2', t: 'Dormir 7 h ou mais'}, {id: 'h3', t: 'Sem celular na cama'}],
+    hlog: {}, mood: {}, reviews: {}, timer: null
+  };
+}
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function sampleState() {
+  const s = blank(), T = dkey(), R = rng(11);
+  s.sample = true; s.settings.name = '';
+  const base = {'Supino reto': 60, 'Supino inclinado': 44, 'Crucifixo': 16, 'Tríceps na corda': 28, 'Puxada frontal': 55, 'Remada curvada': 50, 'Rosca direta': 26, 'Rosca martelo': 14, 'Agachamento': 80, 'Leg press': 160, 'Cadeira extensora': 45, 'Mesa flexora': 40};
+  let pagesTotal = 0;
+  for (let i = 35; i >= 1; i--) {
+    const k = addDays(T, -i), dow = pk(k).getDay();
+    if (R() < .78) { const p = 8 + Math.floor(R() * 9), m = 16 + Math.floor(R() * 26); s.reads[k] = {p, m}; pagesTotal += p; }
+    else if (R() < .4) { const p = 3 + Math.floor(R() * 4); s.reads[k] = {p, m: 9}; pagesTotal += p; }
+    const tid = s.settings.gym[dow];
+    if (tid && R() < .82) {
+      const t = s.templates.find(x => x.id === tid), step = Math.floor((35 - i) / 14) * 2.5;
+      s.workouts.push({id: uid(), date: k, tid, name: t.name, min: 48 + Math.floor(R() * 20),
+        ex: t.ex.map(e => ({n: e.n, sets: Array.from({length: e.s}, () => ({kg: base[e.n] + step, r: e.r - (R() < .25 ? 1 : 0)}))}))});
+    }
+    if (R() < .5) s.mood[k] = {v: 3 + Math.floor(R() * 3), t: ''};
+    const hh = s.habits.filter(() => R() < .65).map(h => h.id); if (hh.length) s.hlog[k] = hh;
+    if (i % 4 === 0) s.weights.push({date: k, kg: Math.round((84.6 - (35 - i) * .055 + (R() - .5) * .5) * 10) / 10});
+  }
+  s.books = [
+    {id: uid(), t: 'Hábitos Atômicos', a: 'James Clear', pages: 320, cur: Math.min(300, 40 + pagesTotal % 240), st: 'reading'},
+    {id: uid(), t: 'Essencialismo', a: 'Greg McKeown', pages: 272, cur: 0, st: 'queue'},
+    {id: uid(), t: 'Sapiens', a: 'Yuval Noah Harari', pages: 443, cur: 443, st: 'done', end: addDays(T, -20)}
+  ];
+  const y = new Date().getFullYear();
+  s.goals = [
+    {id: uid(), t: 'Ler 12 livros no ano', area: 'Estudo', start: 0, target: 12, cur: 8, unit: 'livros', due: y + '-12-31', created: y + '-01-01'},
+    {id: uid(), t: 'Chegar a 80 kg', area: 'Saúde', start: 85, target: 80, cur: 82.8, unit: 'kg', due: y + '-12-31', created: addDays(T, -60)},
+    {id: uid(), t: 'Reserva de emergência', area: 'Finanças', start: 0, target: 10000, cur: 4200, unit: 'R$', due: (y + 1) + '-06-30', created: addDays(T, -150)}
+  ];
+  s.events = [
+    {id: uid(), t: 'Jantar em família', d: T, h: '20:00', pl: '', done: false},
+    {id: uid(), t: 'Reunião de planejamento', d: addDays(T, 1), h: '09:00', pl: 'Online', done: false},
+    {id: uid(), t: 'Consulta de rotina', d: addDays(T, 3), h: '15:00', pl: '', done: false},
+    {id: uid(), t: 'Dentista', d: addDays(T, 8), h: '10:30', pl: '', done: false}
+  ];
+  s.reviews = {};
+  return s;
+}
+function normalize(x) {
+  const b = blank(); const o = Object.assign(b, x || {});
+  o.settings = Object.assign(b.settings, (x && x.settings) || {});
+  ['goals', 'events', 'books', 'templates', 'workouts', 'weights', 'habits'].forEach(k => { if (!Array.isArray(o[k])) o[k] = b[k]; });
+  ['reads', 'hlog', 'mood', 'reviews'].forEach(k => { if (!o[k] || typeof o[k] !== 'object') o[k] = {}; });
+  return o;
+}
+let S;
+try { const raw = localStorage.getItem(LS); S = raw ? normalize(JSON.parse(raw)) : sampleState(); } catch (e) { S = sampleState(); }
+
+/* ---------- persistência ---------- */
+let dbDoc = null, saveT = null, saving = false, dirty = false, status = 'local';
+function setStatus(s) { status = s; const el = $('#savestat'); if (el) el.textContent = statusText(); }
+function statusText() { return status === 'ok' ? 'Salvo na sua conta' : status === 'saving' ? 'Salvando…' : status === 'error' ? 'Não foi possível salvar na conta' : 'Salvo neste aparelho'; }
+function trim() {
+  let j = JSON.stringify(S);
+  if (j.length > 230000) { S.workouts = S.workouts.slice(Math.floor(S.workouts.length * .25)); }
+}
+function save() {
+  S.updatedAt = Date.now();
+  try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) {}
+  dirty = true; setStatus(dbDoc ? 'saving' : 'local');
+  clearTimeout(saveT); saveT = setTimeout(flush, 700);
+}
+async function flush() {
+  if (!dbDoc) return;
+  if (saving) { dirty = true; return; }
+  saving = true; dirty = false;
+  try { trim(); await dbDoc.set({j: JSON.stringify(S), t: S.updatedAt}); setStatus('ok'); }
+  catch (e) { setStatus('error'); }
+  saving = false;
+  if (dirty) flush();
+}
+async function pull() {
+  if (!dbDoc || saving || saveT && dirty) return;
+  try {
+    const snap = await dbDoc.get();
+    if (snap.exists) {
+      const d = snap.data(); const remote = normalize(JSON.parse(d.j));
+      if (remote.updatedAt > S.updatedAt && !$('#sheet-root').classList.contains('open')) {
+        S = remote; try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) {}
+        render();
+      } else if (S.updatedAt > remote.updatedAt) flush();
+    } else if (S.updatedAt > 0) flush();
+    setStatus('ok');
+  } catch (e) { setStatus('error'); }
+}
+async function initDb() {
+  try {
+    if (!window.claude || !claude.use) return;
+    const [db, user] = await Promise.all([claude.use('db'), claude.use('user')]);
+    if (!db || !user) return;
+    const id = await user.id();
+    if (!id) return;
+    dbDoc = db.doc('data/users/' + id + '/app');
+    await pull();
+  } catch (e) {}
+}
+
+/* ---------- regras do dia, sequência e somas ---------- */
+const gymReq = k => !!S.settings.gym[pk(k).getDay()];
+function dayInfo(k) {
+  const r = S.reads[k] || {p: 0, m: 0}, st = S.settings;
+  const readOK = r.p >= st.pages && r.m >= st.minutes;
+  const gymDay = gymReq(k), gymDone = S.workouts.some(w => w.date === k);
+  const won = readOK && (!gymDay || gymDone);
+  const done = (readOK ? 1 : 0) + (gymDay && gymDone ? 1 : 0);
+  const level = won ? 3 : done ? 2 : (r.p > 0 || gymDone) ? 1 : 0;
+  return {r, readOK, gymDay, gymDone, won, level};
+}
+function streaks() {
+  const T = dkey(); let cur = 0, best = 0, run = 0;
+  const first = addDays(T, -400);
+  for (let i = -400; i <= 0; i++) {
+    const k = addDays(T, i), w = dayInfo(k).won;
+    if (w) { run++; best = Math.max(best, run); } else if (k !== T) run = 0;
+  }
+  let k = dayInfo(T).won ? T : addDays(T, -1);
+  while (dayInfo(k).won && diffDays(k, T) > -400) { cur++; k = addDays(k, -1); }
+  return {cur, best};
+}
+function sumReads(from, to) { let p = 0, m = 0; for (let k = from; k <= to; k = addDays(k, 1)) { const r = S.reads[k]; if (r) { p += r.p; m += r.m; } } return {p, m}; }
+function wkCount(from, to) { return S.workouts.filter(w => w.date >= from && w.date <= to).length; }
+function wonCount(from, to) { let c = 0; for (let k = from; k <= to; k = addDays(k, 1)) if (dayInfo(k).won) c++; return c; }
+function volume(w) { return w.ex.reduce((a, e) => a + e.sets.reduce((b, s) => b + s.kg * s.r, 0), 0); }
+function lastSets(name) {
+  for (let i = S.workouts.length - 1; i >= 0; i--) { const e = S.workouts[i].ex.find(x => x.n === name); if (e && e.sets.length) return e.sets; }
+  return null;
+}
+function bestKg(name, beforeDate) {
+  let m = 0; S.workouts.forEach(w => { if (beforeDate && w.date >= beforeDate) return; w.ex.forEach(e => { if (e.n === name) e.sets.forEach(s => { m = Math.max(m, s.kg); }); }); }); return m;
+}
+S.workouts.sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : 0);
+function goalPct(g) { const span = g.target - g.start; return span === 0 ? 0 : clamp((g.cur - g.start) / span, 0, 1); }
+function goalPace(g) {
+  if (!g.due) return null;
+  const T = dkey(), total = Math.max(1, diffDays(g.created || T, g.due)), el = clamp(diffDays(g.created || T, T), 0, total);
+  const exp = el / total, real = goalPct(g);
+  if (real >= 1) return {t: 'Concluída', c: 'good'};
+  if (diffDays(T, g.due) < 0) return {t: 'Prazo vencido', c: 'bad'};
+  return real + .04 >= exp ? {t: 'No ritmo', c: 'good'} : {t: 'Atrasada', c: 'bad'};
+}
+</script>
+<script>
+'use strict';
+/* ---------- núcleo de render ---------- */
+const TABS = [['hoje', 'Hoje', 'today'], ['agenda', 'Agenda', 'agenda'], ['metas', 'Metas', 'goals'], ['leitura', 'Leitura', 'book'], ['treino', 'Treino', 'gym'], ['evolucao', 'Evolução', 'chart']];
+let calMonth = null, calSel = dkey();
+const V = {};
+function renderTop() {
+  const t = S.tab, nm = S.settings.name;
+  const map = {
+    hoje: [nm ? 'Olá, ' + esc(nm) : 'Olá', fmtLong(dkey())],
+    agenda: ['Agenda', 'Compromissos e prazos'],
+    metas: ['Metas', 'O que você quer ter feito até o prazo'],
+    leitura: ['Leitura', 'Todo dia, sem exceção'],
+    treino: ['Treino', 'Presença vale mais que perfeição'],
+    evolucao: ['Evolução', 'O que os números dizem de você']
+  };
+  const [h1, sub] = map[t];
+  $('#top').innerHTML = '<div class="grow"><h1>' + h1 + '</h1><div class="sub">' + esc(sub) + '</div></div>' +
+    '<button class="iconbtn" data-a="settings" aria-label="Ajustes">' + icon('gear') + '</button>';
+}
+function renderTabs() {
+  $('#tabs').innerHTML = TABS.map(([id, label, ic]) =>
+    '<button data-a="tab" data-t="' + id + '" class="' + (S.tab === id ? 'on' : '') + '" aria-label="' + label + '"' + (S.tab === id ? ' aria-current="page"' : '') + '>' + icon(ic) + '<span>' + label + '</span></button>').join('');
+}
+function renderFab() {
+  const t = S.tab;
+  $('#fabhost').innerHTML = t === 'agenda' ? '<button class="fab" data-a="evnew" aria-label="Novo compromisso">' + icon('plus') + '</button>'
+    : t === 'metas' ? '<button class="fab" data-a="goalnew" aria-label="Nova meta">' + icon('plus') + '</button>' : '';
+}
+function render() {
+  if (!V[S.tab]) S.tab = 'hoje';
+  renderTop(); renderTabs();
+  $('#view').innerHTML = V[S.tab]();
+  renderFab(); tickTimer();
+}
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.style.display = 'block';
+  clearTimeout(toast.t); toast.t = setTimeout(() => { t.style.display = 'none'; }, 2600);
+}
+function ring(pct, done) {
+  const c = 2 * Math.PI * 18;
+  return '<svg class="ring ' + (done ? 'done' : '') + '" viewBox="0 0 46 46" aria-hidden="true"><circle class="bg" cx="23" cy="23" r="18"/><circle class="fg" cx="23" cy="23" r="18" stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + (c * (1 - pct)).toFixed(1) + '" transform="rotate(-90 23 23)"/></svg>';
+}
+function sampleBanner() {
+  return '<div class="sample"><div class="grow" style="font-size:14px"><b>Dados de exemplo.</b> Mexa à vontade para ver como tudo funciona.</div>' +
+    '<div class="stack" style="gap:6px"><button class="btn sm" data-a="sampleclear">Começar do zero</button><button class="btn sm ghost" data-a="samplekeep">Manter</button></div></div>';
+}
+function evRow(e) {
+  return '<div class="ev ' + (e.done ? 'done' : '') + '"><button class="check ' + (e.done ? 'on' : '') + '" data-a="evdone" data-id="' + e.id + '" aria-label="Marcar como feito">' + icon('check') + '</button>' +
+    '<div class="time">' + (e.h || 'dia todo') + '</div>' +
+    '<div class="grow" data-a="evedit" data-id="' + e.id + '" style="cursor:pointer"><div class="ttl">' + esc(e.t) + '</div>' +
+    (e.pl ? '<div class="faint" style="font-size:13px">' + esc(e.pl) + '</div>' : '') + '</div></div>';
+}
+const evSort = (a, b) => (a.d + (a.h || '00:00')) < (b.d + (b.h || '00:00')) ? -1 : 1;
+const activeGoals = () => S.goals.filter(g => goalPct(g) < 1).sort((a, b) => (a.due || '9999') < (b.due || '9999') ? -1 : 1);
+
+/* ---------- HOJE ---------- */
+V.hoje = function () {
+  const T = dkey(), di = dayInfo(T), st = S.settings, now = new Date(), sk = streaks();
+  const end = new Date(now); end.setHours(24, 0, 0, 0);
+  const ms = end - now, hl = Math.floor(ms / 36e5), ml = Math.floor(ms % 36e5 / 6e4);
+  const rpct = (Math.min(di.r.p / st.pages, 1) + Math.min(di.r.m / st.minutes, 1)) / 2;
+  const tpl = S.templates.find(t => t.id === st.gym[now.getDay()]);
+  const missing = (di.readOK ? 0 : 1) + (di.gymDay && !di.gymDone ? 1 : 0);
+  let h = '';
+  if (S.sample) h += sampleBanner();
+  h += '<section class="card hero ' + (di.won ? 'won' : '') + '" aria-label="Regra do dia">' +
+    '<div class="row sp"><span class="eyebrow">Regra do dia</span><span class="streak" title="Dias seguidos com a regra cumprida">' + icon('flame') + sk.cur + (sk.cur === 1 ? ' dia' : ' dias') + '</span></div>' +
+    '<div class="big">' + (di.won ? 'Dia ganho. Pode descansar.' : missing === 1 ? 'Falta 1 coisa para ganhar o dia.' : 'Faltam ' + missing + ' coisas para ganhar o dia.') + '</div>';
+  h += '<div class="rule">' + ring(rpct, di.readOK) + '<div class="grow"><b>Ler ' + st.pages + ' páginas e ' + st.minutes + ' min</b>' +
+    '<div class="muted mono" style="font-size:13px">' + di.r.p + '/' + st.pages + ' págs · ' + di.r.m + '/' + st.minutes + ' min</div></div>' +
+    (di.readOK ? '<span class="badge good">Feito</span>' : '<button class="btn sm" data-a="tab" data-t="leitura">Ler agora</button>') + '</div>';
+  if (di.gymDay) {
+    h += '<div class="rule">' + ring(di.gymDone ? 1 : 0, di.gymDone) + '<div class="grow"><b>Treino' + (tpl ? ': ' + esc(tpl.name) : '') + '</b>' +
+      '<div class="muted" style="font-size:13px">' + (di.gymDone ? 'Registrado hoje' : 'Dia de academia na sua semana') + '</div></div>' +
+      (di.gymDone ? '<span class="badge good">Feito</span>' : '<button class="btn sm" data-a="tab" data-t="treino">Treinar</button>') + '</div>';
+  } else {
+    h += '<div class="rule"><div class="grow muted" style="font-size:14px">Hoje é dia de descanso do treino. Ler continua valendo.</div></div>';
+  }
+  if (!di.won) {
+    h += '<div class="muted mono" style="font-size:13px">O dia fecha em ' + hl + ' h ' + p2(ml) + ' min</div>';
+    if (st.pledge) h += '<div class="pledge"><b>Seu compromisso:</b> ' + esc(st.pledge) + '</div>';
+  }
+  h += '</section>';
+
+  const todays = S.events.filter(e => e.d === T).sort(evSort);
+  h += '<section class="card"><div class="card-h"><h2>Compromissos de hoje</h2><button class="linkbtn" data-a="tab" data-t="agenda">Agenda</button></div>' +
+    (todays.length ? todays.map(evRow).join('') : '<div class="muted" style="font-size:14px">Nada marcado para hoje. <button class="linkbtn" data-a="evnew">Adicionar</button></div>') + '</section>';
+
+  const hl2 = S.hlog[T] || [];
+  h += '<section class="card"><div class="card-h"><h2>Hábitos rápidos</h2><span class="faint mono" style="font-size:13px">' + hl2.filter(id => S.habits.some(x => x.id === id)).length + '/' + S.habits.length + '</span></div>' +
+    '<div class="row wrapr" style="gap:8px">' + (S.habits.length ? S.habits.map(x => '<button class="chip ' + (hl2.includes(x.id) ? 'on' : '') + '" data-a="hab" data-id="' + x.id + '">' + (hl2.includes(x.id) ? icon('check') : '') + esc(x.t) + '</button>').join('') : '<span class="muted" style="font-size:14px">Crie hábitos em Ajustes.</span>') + '</div></section>';
+
+  const ag = activeGoals().slice(0, 3);
+  h += '<section class="card"><div class="card-h"><h2>Metas em foco</h2><button class="linkbtn" data-a="tab" data-t="metas">Ver todas</button></div>' +
+    (ag.length ? '<div class="stack" style="gap:14px">' + ag.map(g => {
+      const pc = Math.round(goalPct(g) * 100);
+      return '<div class="row"><div class="grow"><div class="row sp" style="margin-bottom:6px"><span class="t-ellip" style="font-weight:600">' + esc(g.t) + '</span><span class="mono faint" style="font-size:13px">' + pc + '%</span></div><div class="bar"><i style="width:' + pc + '%"></i></div></div>' +
+        '<button class="iconbtn" style="width:36px;height:36px" data-a="goalprog" data-id="' + g.id + '" aria-label="Atualizar progresso">' + icon('plus') + '</button></div>';
+    }).join('') + '</div>' : '<div class="muted" style="font-size:14px">Nenhuma meta ativa. <button class="linkbtn" data-a="goalnew">Criar meta</button></div>') + '</section>';
+
+  const m = S.mood[T] || {};
+  h += '<section class="card"><div class="card-h"><h2>Como foi o dia?</h2><span class="faint" style="font-size:13px">1 pior · 5 melhor</span></div>' +
+    '<div class="mood">' + [1, 2, 3, 4, 5].map(v => '<button class="' + (m.v === v ? 'on' : '') + '" data-a="mood" data-v="' + v + '" aria-label="Nota ' + v + '">' + v + '</button>').join('') + '</div>' +
+    '<div class="field" style="margin-top:10px"><label for="mnote">Uma linha sobre hoje</label><input id="mnote" class="inp" data-ch="mnote" maxlength="140" placeholder="O que valeu a pena?" value="' + esc(m.t || '') + '"></div></section>';
+  return h;
+};
+
+/* ---------- AGENDA ---------- */
+V.agenda = function () {
+  const T = dkey(); if (!calMonth) calMonth = T.slice(0, 8) + '01';
+  const first = pk(calMonth), lead = first.getDay(), start = addDays(calMonth, -lead);
+  const has = {}; S.events.forEach(e => { has[e.d] = (has[e.d] || 0) + 1; });
+  let cells = '';
+  for (let i = 0; i < 42; i++) {
+    const k = addDays(start, i), inM = k.slice(0, 7) === calMonth.slice(0, 7);
+    cells += '<button data-a="selday" data-k="' + k + '" class="' + (inM ? '' : 'out') + (k === T ? ' today' : '') + (k === calSel ? ' sel' : '') + '" aria-label="' + fmtLong(k) + '">' + pk(k).getDate() + (has[k] ? '<i></i>' : '') + '</button>';
+  }
+  let h = '<section class="card"><div class="card-h"><h2>' + MONTHS[first.getMonth()] + ' ' + first.getFullYear() + '</h2><div class="row" style="gap:6px">' +
+    '<button class="iconbtn" style="width:36px;height:36px" data-a="calprev" aria-label="Mês anterior">' + icon('left') + '</button>' +
+    '<button class="iconbtn" style="width:36px;height:36px" data-a="calnext" aria-label="Próximo mês">' + icon('right') + '</button></div></div>' +
+    '<div class="cal">' + DOW1.map(d => '<div class="dow">' + d + '</div>').join('') + cells + '</div></section>';
+  const day = S.events.filter(e => e.d === calSel).sort(evSort);
+  h += '<section class="card"><div class="card-h"><h2>' + fmtLong(calSel) + '</h2><button class="btn sm ghost" data-a="evnew" data-k="' + calSel + '">Novo</button></div>' +
+    (day.length ? day.map(evRow).join('') : '<div class="muted" style="font-size:14px">Dia livre.</div>') + '</section>';
+  const up = S.events.filter(e => e.d >= T && !e.done && e.d !== calSel).sort(evSort).slice(0, 6);
+  if (up.length) h += '<section class="card"><div class="card-h"><h2>Próximos</h2></div>' + up.map(e =>
+    '<div class="ev"><div class="time" style="width:64px">' + fmtShort(e.d) + '</div><div class="grow" data-a="evedit" data-id="' + e.id + '" style="cursor:pointer"><div>' + esc(e.t) + '</div><div class="faint" style="font-size:13px">' + fmtDow(e.d) + (e.h ? ' · ' + e.h : '') + '</div></div></div>').join('') + '</section>';
+  return h;
+};
+
+/* ---------- METAS ---------- */
+V.metas = function () {
+  if (!S.goals.length) return '<div class="card empty"><h2>Sem metas ainda</h2><p style="margin:6px 0 14px">Uma meta boa tem número e prazo. Exemplo: ler 12 livros até dezembro.</p><button class="btn" data-a="goalnew">Criar a primeira meta</button></div>';
+  const list = S.goals.slice().sort((a, b) => (goalPct(a) >= 1) - (goalPct(b) >= 1) || ((a.due || '9999') < (b.due || '9999') ? -1 : 1));
+  return list.map(g => {
+    const pc = Math.round(goalPct(g) * 100), pace = goalPace(g), left = g.due ? diffDays(dkey(), g.due) : null;
+    return '<section class="card goal"><div class="row top sp"><div class="grow"><h2>' + esc(g.t) + '</h2><div class="faint" style="font-size:13px;margin-top:2px">' + esc(g.area || '') + '</div></div>' +
+      (pace ? '<span class="badge ' + pace.c + '">' + pace.t + '</span>' : '') + '</div>' +
+      '<div class="bar ' + (pc >= 100 ? 'good' : '') + '" style="margin-top:12px"><i style="width:' + pc + '%"></i></div>' +
+      '<div class="meta"><span class="mono">' + fmtN(g.cur, 1) + ' de ' + fmtN(g.target, 1) + ' ' + esc(g.unit || '') + ' · ' + pc + '%</span><span>' + (left == null ? '' : left >= 0 ? left + ' dias' : 'venceu há ' + (-left) + ' dias') + '</span></div>' +
+      '<div class="row" style="margin-top:12px;gap:8px"><button class="btn sm" data-a="goalprog" data-id="' + g.id + '">Atualizar</button><button class="btn sm ghost" data-a="goaledit" data-id="' + g.id + '">' + icon('edit') + 'Editar</button></div></section>';
+  }).join('');
+};
+</script>
+<style>
+.chart .bar{fill:var(--accent)} .chart .bar.dim{fill-opacity:.5}
+.chart .hit{fill:transparent;cursor:pointer}
+.chart .tgt{stroke:var(--ink3);stroke-dasharray:4 4;stroke-width:1}
+.chart text.tgtl{fill:var(--ink3)}
+.chart .ln{fill:none;stroke:var(--accent);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.chart .mk{fill:var(--accent);stroke:var(--surface);stroke-width:2}
+.chart text.val{fill:var(--ink);font-weight:500;font-size:11.5px}
+.heat i[data-tt]{cursor:pointer}
+</style>
+<script>
+'use strict';
+/* ---------- gráficos ---------- */
+function niceMax(v) { if (v <= 0) return 1; const e = Math.pow(10, Math.floor(Math.log10(v))), f = v / e; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * e; }
+function barChart(items, opt) {
+  opt = opt || {};
+  const W = 340, H = 150, pl = 30, pb = 20, pt = 10, pr = 6, n = items.length;
+  const mx = niceMax(Math.max(1, opt.target || 0, ...items.map(i => i.v)));
+  const iw = (W - pl - pr) / n, bw = Math.min(28, iw - 8);
+  let s = '<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(opt.label || '') + '">';
+  [0, .5, 1].forEach(f => { const y = pt + (H - pt - pb) * (1 - f); s += '<line class="grid" x1="' + pl + '" x2="' + (W - pr) + '" y1="' + y + '" y2="' + y + '"/><text x="' + (pl - 6) + '" y="' + (y + 3.5) + '" text-anchor="end">' + fmtN(mx * f, mx < 10 ? 1 : 0) + '</text>'; });
+  items.forEach((it, i) => {
+    const x = pl + iw * i + (iw - bw) / 2, h = (H - pt - pb) * (it.v / mx), y = H - pb - h;
+    s += '<rect class="bar' + (it.cur ? '' : ' dim') + '" x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + Math.max(h, it.v > 0 ? 2 : 0).toFixed(1) + '" rx="3"/>';
+    s += '<text x="' + (x + bw / 2).toFixed(1) + '" y="' + (H - 5) + '" text-anchor="middle">' + esc(it.l) + '</text>';
+    s += '<rect class="hit" x="' + (pl + iw * i).toFixed(1) + '" y="' + pt + '" width="' + iw.toFixed(1) + '" height="' + (H - pt) + '" data-tt="' + esc(it.tt) + '"/>';
+  });
+  if (opt.target) { const y = H - pb - (H - pt - pb) * (opt.target / mx); s += '<line class="tgt" x1="' + pl + '" x2="' + (W - pr) + '" y1="' + y.toFixed(1) + '" y2="' + y.toFixed(1) + '"/><text class="tgtl" x="' + (W - pr) + '" y="' + (y - 4).toFixed(1) + '" text-anchor="end">' + esc(opt.targetLabel || 'meta') + '</text>'; }
+  return s + '</svg>';
+}
+function lineChart(pts, opt) {
+  opt = opt || {};
+  if (!pts.length) return '';
+  const W = 340, H = 150, pl = 36, pb = 20, pt = 14, pr = 12;
+  let lo = Math.min(...pts.map(p => p.v)), hi = Math.max(...pts.map(p => p.v));
+  if (opt.ref != null) { lo = Math.min(lo, opt.ref); hi = Math.max(hi, opt.ref); }
+  const pad = (hi - lo) || Math.max(1, hi * .05); lo -= pad * .15; hi += pad * .15;
+  const X = i => pts.length === 1 ? (pl + W - pr) / 2 : pl + (W - pl - pr) * i / (pts.length - 1);
+  const Y = v => pt + (H - pt - pb) * (1 - (v - lo) / (hi - lo));
+  let s = '<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(opt.label || '') + '">';
+  [0, .5, 1].forEach(f => { const v = lo + (hi - lo) * f, y = Y(v); s += '<line class="grid" x1="' + pl + '" x2="' + (W - pr) + '" y1="' + y.toFixed(1) + '" y2="' + y.toFixed(1) + '"/><text x="' + (pl - 6) + '" y="' + (y + 3.5).toFixed(1) + '" text-anchor="end">' + fmtN(v, 1) + '</text>'; });
+  if (opt.ref != null) { const y = Y(opt.ref); s += '<line class="tgt" x1="' + pl + '" x2="' + (W - pr) + '" y1="' + y.toFixed(1) + '" y2="' + y.toFixed(1) + '"/><text class="tgtl" x="' + (W - pr) + '" y="' + (y - 4).toFixed(1) + '" text-anchor="end">' + esc(opt.refLabel || 'meta') + '</text>'; }
+  if (pts.length > 1) s += '<path class="ln" d="' + pts.map((p, i) => (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(p.v).toFixed(1)).join(' ') + '"/>';
+  pts.forEach((p, i) => { const last = i === pts.length - 1; s += '<circle class="mk" cx="' + X(i).toFixed(1) + '" cy="' + Y(p.v).toFixed(1) + '" r="' + (last ? 5 : 3.5) + '"/>'; });
+  const lp = pts[pts.length - 1];
+  s += '<text class="val" x="' + Math.min(X(pts.length - 1), W - pr - 12).toFixed(1) + '" y="' + (Y(lp.v) - 10).toFixed(1) + '" text-anchor="middle">' + fmtN(lp.v, 1) + '</text>';
+  const li = pts.length > 4 ? [0, Math.floor((pts.length - 1) / 2), pts.length - 1] : pts.map((_, i) => i);
+  li.forEach(i => { s += '<text x="' + X(i).toFixed(1) + '" y="' + (H - 5) + '" text-anchor="' + (i === 0 && pts.length > 1 ? 'start' : i === pts.length - 1 && pts.length > 1 ? 'end' : 'middle') + '">' + esc(pts[i].l) + '</text>'; });
+  pts.forEach((p, i) => { s += '<circle class="hit" cx="' + X(i).toFixed(1) + '" cy="' + Y(p.v).toFixed(1) + '" r="15" data-tt="' + esc(p.tt) + '"/>'; });
+  return s + '</svg>';
+}
+const dm = k => p2(pk(k).getDate()) + '/' + p2(pk(k).getMonth() + 1);
+
+/* ---------- cronômetro ---------- */
+const tmElapsed = () => { const t = S.timer; return t ? t.acc + (t.run ? Date.now() - t.start : 0) : 0; };
+function fmtClock(ms) { const s = Math.floor(ms / 1000), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return (h ? h + ':' + p2(m) : p2(m)) + ':' + p2(s % 60); }
+function tickTimer() { const el = $('#tclock'); if (el) el.textContent = fmtClock(tmElapsed()); const e2 = $('#sclock'); if (e2 && sess) e2.textContent = fmtClock(Date.now() - sess.start); }
+
+/* ---------- LEITURA ---------- */
+V.leitura = function () {
+  const T = dkey(), st = S.settings, di = dayInfo(T), r = di.r, tm = S.timer;
+  const cb = S.books.find(b => b.st === 'reading');
+  const pp = Math.min(100, Math.round(r.p / st.pages * 100)), mp = Math.min(100, Math.round(r.m / st.minutes * 100));
+  let h = '<section class="card"><div class="card-h"><h2>Hoje</h2>' + (di.readOK ? '<span class="badge good">Meta cumprida</span>' : '<span class="badge">Em aberto</span>') + '</div><div class="stack" style="gap:12px">' +
+    '<div><div class="row sp" style="font-size:13px;margin-bottom:5px"><span>Páginas</span><span class="mono">' + r.p + '/' + st.pages + '</span></div><div class="bar ' + (pp >= 100 ? 'good' : '') + '"><i style="width:' + pp + '%"></i></div></div>' +
+    '<div><div class="row sp" style="font-size:13px;margin-bottom:5px"><span>Minutos</span><span class="mono">' + r.m + '/' + st.minutes + '</span></div><div class="bar ' + (mp >= 100 ? 'good' : '') + '"><i style="width:' + mp + '%"></i></div></div></div></section>';
+  if (!cb) {
+    h += '<section class="card empty"><h2>Qual livro está na sua mesa?</h2><p style="margin:6px 0 14px">Sem livro em leitura não há cronômetro. Adicione um para começar.</p><button class="btn" data-a="booknew">Adicionar livro</button></section>';
+  } else {
+    const run = tm && tm.run, started = tm && (tm.run || tm.acc > 0), left = Math.max(0, st.minutes - r.m);
+    h += '<section class="card"><div class="eyebrow">Lendo agora</div><h2 style="margin-top:2px">' + esc(cb.t) + '</h2><div class="muted" style="font-size:13.5px">' + esc(cb.a || '') + ' · página ' + cb.cur + ' de ' + cb.pages + '</div>' +
+      '<div class="timer" id="tclock">' + fmtClock(tmElapsed()) + '</div>' +
+      '<div class="muted" style="text-align:center;font-size:13.5px;margin-bottom:12px">' + (left > 0 ? 'Faltam ' + left + ' min para o mínimo do dia' : 'Mínimo de tempo do dia batido') + '</div>' +
+      '<div class="row" style="gap:10px">' +
+      (!started ? '<button class="btn block" data-a="tstart">' + icon('play') + 'Começar a ler</button>' :
+        (run ? '<button class="btn ghost grow" data-a="tpause">' + icon('pause') + 'Pausar</button>' : '<button class="btn ghost grow" data-a="tstart">' + icon('play') + 'Continuar</button>') +
+        '<button class="btn grow" data-a="tfinish">Terminar</button>') + '</div>' +
+      '<div style="text-align:center;margin-top:10px"><button class="linkbtn" data-a="readmanual">Registrar sem cronômetro</button>' + (started ? ' · <button class="linkbtn" data-a="tcancel" style="color:var(--bad)">Descartar</button>' : '') + '</div></section>';
+    const last14 = sumReads(addDays(T, -13), T).p / 14, rem = cb.pages - cb.cur;
+    const fin = last14 > 0 ? addDays(T, Math.ceil(rem / last14)) : null;
+    h += '<section class="card"><div class="row sp" style="margin-bottom:8px"><b>Progresso do livro</b><span class="mono muted">' + Math.round(cb.cur / cb.pages * 100) + '%</span></div><div class="bar"><i style="width:' + Math.round(cb.cur / cb.pages * 100) + '%"></i></div>' +
+      '<div class="muted" style="font-size:13.5px;margin-top:9px">' + (fin ? 'No ritmo dos últimos 14 dias (' + fmtN(last14, 1) + ' págs/dia), você termina em ' + fmtShort(fin) + '.' : 'Leia alguns dias seguidos e eu estimo quando você termina.') + '</div></section>';
+  }
+  const days = []; for (let i = 6; i >= 0; i--) { const k = addDays(T, -i); days.push({l: DOW1[pk(k).getDay()], v: (S.reads[k] || {p: 0}).p, cur: i === 0, tt: fmtDow(k) + ' ' + dm(k) + ': ' + (S.reads[k] ? S.reads[k].p : 0) + ' págs'}); }
+  h += '<section class="card"><div class="card-h"><h2>Últimos 7 dias</h2></div>' + barChart(days, {target: st.pages, targetLabel: st.pages + ' págs', label: 'Páginas lidas por dia'}) + '<div class="tt">Toque numa barra para ver o dia.</div></section>';
+  const grp = [['reading', 'Em leitura'], ['queue', 'Na fila'], ['done', 'Terminados']];
+  h += '<section class="card"><div class="card-h"><h2>Biblioteca</h2><button class="btn sm ghost" data-a="booknew">' + icon('plus') + 'Livro</button></div>';
+  const rows = grp.map(([s, lab]) => S.books.filter(b => b.st === s).map(b =>
+    '<div class="book" data-a="bookedit" data-id="' + b.id + '" style="cursor:pointer"><span class="spine" style="background:' + (s === 'reading' ? 'var(--accent)' : s === 'done' ? 'var(--good)' : 'var(--ink3)') + '"></span><div class="grow"><div style="font-weight:600">' + esc(b.t) + '</div><div class="faint" style="font-size:13px">' + esc(b.a || '') + (b.a ? ' · ' : '') + b.pages + ' págs</div></div><span class="badge ' + (s === 'reading' ? 'acc' : s === 'done' ? 'good' : '') + '">' + lab + '</span></div>').join('')).join('');
+  h += rows || '<div class="muted" style="font-size:14px">Nenhum livro cadastrado.</div>';
+  return h + '</section>';
+};
+
+/* ---------- TREINO ---------- */
+V.treino = function () {
+  const T = dkey(), dow = pk(T).getDay(), st = S.settings, ws = weekStart(T);
+  const tpl = S.templates.find(t => t.id === st.gym[dow]), did = S.workouts.find(w => w.date === T);
+  let h = '';
+  if (sessSaved()) h += '<div class="sample"><div class="grow"><b>Treino em andamento.</b> Você não concluiu o último.</div><button class="btn sm" data-a="sessresume">Retomar</button></div>';
+  h += '<section class="card"><div class="card-h"><h2>Sua semana</h2><button class="linkbtn" data-a="plan">Editar</button></div><div class="week">' +
+    [1, 2, 3, 4, 5, 6, 0].map((d, i) => { const k = addDays(ws, i), t = S.templates.find(x => x.id === st.gym[d]), dn = S.workouts.some(w => w.date === k);
+      return '<div class="' + (t ? 'on' : '') + (k === T ? ' today' : '') + '">' + DOW3[d] + '<b>' + (t ? (dn ? '✓' : esc(t.name.charAt(0))) : '–') + '</b></div>'; }).join('') + '</div></section>';
+  h += '<section class="card"><div class="eyebrow">Hoje</div>';
+  if (did) h += '<h2 style="margin-top:2px">Treino feito: ' + esc(did.name) + '</h2><div class="muted" style="font-size:14px;margin-top:4px">' + fmtN(volume(did), 0) + ' kg de volume em ' + did.min + ' min.</div>';
+  else if (tpl) h += '<h2 style="margin-top:2px">' + esc(tpl.name) + '</h2><div class="muted" style="font-size:14px;margin:4px 0 12px">' + tpl.ex.map(e => esc(e.n)).join(' · ') + '</div><button class="btn block" data-a="sessstart" data-id="' + tpl.id + '">' + icon('play') + 'Começar treino</button>';
+  else h += '<h2 style="margin-top:2px">Descanso na sua semana</h2><div class="muted" style="font-size:14px;margin-top:4px">Se quiser treinar mesmo assim, escolha abaixo.</div>';
+  if (!tpl || did) h += '';
+  h += '<div class="row wrapr" style="gap:8px;margin-top:12px"><span class="faint" style="font-size:13px">' + (tpl && !did ? 'Ou outro:' : 'Treinar:') + '</span>' + S.templates.filter(t => !tpl || did || t.id !== tpl.id).map(t => '<button class="chip" data-a="sessstart" data-id="' + t.id + '">' + esc(t.name) + '</button>').join('') + '</div></section>';
+  h += '<section class="card"><div class="card-h"><h2>Seus treinos</h2><button class="btn sm ghost" data-a="tplnew">' + icon('plus') + 'Novo</button></div>' +
+    (S.templates.length ? S.templates.map(t => '<div class="book" data-a="tpledit" data-id="' + t.id + '" style="cursor:pointer"><div class="grow"><div style="font-weight:600">' + esc(t.name) + '</div><div class="faint" style="font-size:13px">' + t.ex.length + ' exercícios</div></div>' + icon('edit').replace('<svg', '<svg width="18" height="18"') + '</div>').join('') : '<div class="muted" style="font-size:14px">Crie seu primeiro treino.</div>') + '</section>';
+  const hist = S.workouts.slice(-8).reverse();
+  h += '<section class="card"><div class="card-h"><h2>Histórico</h2></div>' + (hist.length ? hist.map(w => {
+    const prs = w.ex.filter(e => e.sets.length && Math.max(...e.sets.map(s => s.kg)) > bestKg(e.n, w.date) && bestKg(e.n, w.date) > 0).length;
+    return '<div class="book"><div class="grow"><div style="font-weight:600">' + esc(w.name) + '</div><div class="faint" style="font-size:13px">' + fmtDow(w.date) + ', ' + fmtShort(w.date) + ' · ' + w.min + ' min</div></div><div class="mono" style="text-align:right;font-size:13px">' + fmtN(volume(w), 0) + ' kg' + (prs ? '<div class="pr">' + prs + ' recorde' + (prs > 1 ? 's' : '') + '</div>' : '') + '</div></div>';
+  }).join('') : '<div class="muted" style="font-size:14px">Nenhum treino registrado.</div>') + '</section>';
+  return h;
+};
+
+/* ---------- EVOLUÇÃO ---------- */
+let exSel = '';
+const moodAvg = (a, b) => { let s = 0, c = 0; for (let k = a; k <= b; k = addDays(k, 1)) if (S.mood[k] && S.mood[k].v) { s += S.mood[k].v; c++; } return c ? fmtN(s / c, 1) : '–'; };
+V.evolucao = function () {
+  const T = dkey(), sk = streaks(), ws = weekStart(T), m0 = T.slice(0, 8) + '01', st = S.settings;
+  let h = '<div class="stats">' +
+    '<div class="stat"><small>Sequência atual</small><b class="mono">' + sk.cur + '</b><small>dias ganhos seguidos</small></div>' +
+    '<div class="stat"><small>Melhor sequência</small><b class="mono">' + sk.best + '</b><small>no último ano</small></div>' +
+    '<div class="stat"><small>Últimos 30 dias</small><b class="mono">' + wonCount(addDays(T, -29), T) + '/30</b><small>dias ganhos</small></div>' +
+    '<div class="stat"><small>Treinos no mês</small><b class="mono">' + wkCount(m0, T) + '</b><small>' + fmtN(sumReads(m0, T).p, 0) + ' páginas lidas</small></div></div>';
+  const start = addDays(ws, -77); let cells = '';
+  for (let i = 0; i < 84; i++) {
+    const k = addDays(start, i);
+    if (k > T) { cells += '<i class="fut"></i>'; continue; }
+    const di = dayInfo(k), txt = fmtDow(k) + ' ' + dm(k) + ': ' + (di.won ? 'dia ganho' : (di.r.p ? di.r.p + ' págs' : 'sem leitura') + (di.gymDay ? (di.gymDone ? ', treino feito' : ', sem treino') : ''));
+    cells += '<i class="l' + di.level + '" data-tt="' + esc(txt) + '"></i>';
+  }
+  h += '<section class="card"><div class="card-h"><h2>Constância</h2><span class="faint" style="font-size:13px">12 semanas</span></div><div class="heat-wrap"><div class="days">' + ['S', 'T', 'Q', 'Q', 'S', 'S', 'D'].map(d => '<span>' + d + '</span>').join('') + '</div><div class="grid"><div class="heat">' + cells + '</div></div></div>' +
+    '<div class="tt">Toque num quadrado para ver o dia. Mais escuro, mais cumprido.</div></section>';
+  const pw = [], tw = [];
+  for (let i = 7; i >= 0; i--) {
+    const a = addDays(ws, -7 * i), b = addDays(a, 6), rd = sumReads(a, b);
+    pw.push({l: dm(a).slice(0, 5), v: rd.p, cur: i === 0, tt: 'Semana de ' + fmtShort(a) + ': ' + rd.p + ' págs, ' + rd.m + ' min'});
+    tw.push({l: dm(a).slice(0, 5), v: wkCount(a, b), cur: i === 0, tt: 'Semana de ' + fmtShort(a) + ': ' + wkCount(a, b) + ' treino(s)'});
+  }
+  h += '<section class="card"><div class="card-h"><h2>Páginas por semana</h2></div>' + barChart(pw, {target: st.pages * 7, targetLabel: 'meta', label: 'Páginas lidas por semana'}) + '<div class="tt">Toque numa barra.</div></section>';
+  const gd = Object.keys(st.gym).length;
+  h += '<section class="card"><div class="card-h"><h2>Treinos por semana</h2></div>' + barChart(tw, {target: gd || 0, targetLabel: 'plano', label: 'Treinos por semana'}) + '<div class="tt">Toque numa barra.</div></section>';
+  const ws8 = S.weights.slice().sort((a, b) => a.date < b.date ? -1 : 1).slice(-16);
+  const gw = S.goals.find(g => (g.unit || '').toLowerCase() === 'kg');
+  const diffw = ws8.length > 1 ? ws8[ws8.length - 1].kg - ws8[0].kg : null;
+  h += '<section class="card"><div class="card-h"><h2>Peso</h2><button class="btn sm ghost" data-a="weightnew">' + icon('plus') + 'Registrar</button></div>' +
+    (ws8.length ? lineChart(ws8.map(w => ({l: dm(w.date), v: w.kg, tt: fmtShort(w.date) + ': ' + fmtN(w.kg, 1) + ' kg'})), {ref: gw ? gw.target : null, refLabel: 'meta', label: 'Peso ao longo do tempo'}) + '<div class="tt">' + (diffw != null ? 'Variação no período: ' + (diffw > 0 ? '+' : '') + fmtN(diffw, 1) + ' kg. Toque num ponto.' : 'Registre de novo para ver a linha.') + '</div>' : '<div class="muted" style="font-size:14px">Registre seu peso para acompanhar a linha.</div>') + '</section>';
+  const names = []; S.workouts.forEach(w => w.ex.forEach(e => { if (!names.includes(e.n)) names.push(e.n); }));
+  if (names.length) {
+    if (!names.includes(exSel)) exSel = names[0];
+    const pts = []; S.workouts.forEach(w => { const e = w.ex.find(x => x.n === exSel); if (e && e.sets.length) pts.push({l: dm(w.date), v: Math.max(...e.sets.map(s => s.kg)), tt: fmtShort(w.date) + ': ' + fmtN(Math.max(...e.sets.map(s => s.kg)), 1) + ' kg'}); });
+    h += '<section class="card"><div class="card-h"><h2>Carga por exercício</h2></div><div class="field"><label for="exsel">Exercício</label><select id="exsel" class="inp" data-ch="exsel">' + names.map(n => '<option ' + (n === exSel ? 'selected' : '') + '>' + esc(n) + '</option>').join('') + '</select></div>' +
+      '<div style="margin-top:10px">' + lineChart(pts.slice(-12), {label: 'Maior carga por treino'}) + '</div><div class="tt">Maior carga de cada treino, em kg.</div></section>';
+  }
+  const pws = addDays(ws, -7), pwe = addDays(ws, -1);
+  const a = {w: wonCount(ws, T), p: sumReads(ws, T).p, m: sumReads(ws, T).m, t: wkCount(ws, T), h: moodAvg(ws, T)};
+  const b = {w: wonCount(pws, pwe), p: sumReads(pws, pwe).p, m: sumReads(pws, pwe).m, t: wkCount(pws, pwe), h: moodAvg(pws, pwe)};
+  h += '<section class="card"><div class="card-h"><h2>Revisão da semana</h2></div><div class="cmp"><span></span><span class="h">Esta</span><span class="h">Anterior</span>' +
+    [['Dias ganhos', 'w'], ['Páginas lidas', 'p'], ['Minutos lendo', 'm'], ['Treinos', 't'], ['Humor médio', 'h']].map(([l, k]) => '<span>' + l + '</span><span class="v">' + a[k] + '</span><span class="v faint">' + b[k] + '</span>').join('') + '</div>' +
+    '<div class="field" style="margin-top:14px"><label for="wnote">Um ajuste para a próxima semana</label><textarea id="wnote" class="inp" data-ch="wnote" placeholder="Ex.: ler antes do almoço, não depois do jantar">' + esc(S.reviews[ws] || '') + '</textarea></div></section>';
+  return h;
+};
+</script>
+<script>
+'use strict';
+/* ---------- folhas (formulários) ---------- */
+let sess = null;
+const SESS = 'prumo.sess';
+const sessSaved = () => { try { const s = JSON.parse(localStorage.getItem(SESS) || 'null'); return !!(s && s.date === dkey()); } catch (e) { return false; } };
+const persistSess = () => { try { if (sess) localStorage.setItem(SESS, JSON.stringify(sess)); else localStorage.removeItem(SESS); } catch (e) {} };
+const val = id => { const el = document.getElementById(id); return el ? el.value : ''; };
+function openSheet(html, full) {
+  const r = $('#sheet-root');
+  r.innerHTML = '<div class="scrim" data-a="' + (full ? 'sessquit' : 'close') + '"></div><div class="sheet' + (full ? ' full' : '') + '" role="dialog" aria-modal="true"><div class="grab"></div>' + html + '</div>';
+  r.classList.add('open');
+}
+function closeSheet() { const r = $('#sheet-root'); r.classList.remove('open'); r.innerHTML = ''; }
+function confirmSheet(title, msg, yesLabel, action, data) {
+  openSheet('<h2>' + esc(title) + '</h2><p class="muted">' + esc(msg) + '</p><div class="row" style="gap:10px"><button class="btn ghost grow" data-a="close">Cancelar</button><button class="btn danger grow" data-a="' + action + '" ' + (data || '') + '>' + esc(yesLabel) + '</button></div>');
+}
+const optList = (arr, sel) => arr.map(([v, l]) => '<option value="' + esc(v) + '" ' + (String(v) === String(sel) ? 'selected' : '') + '>' + esc(l) + '</option>').join('');
+
+function settingsSheet() {
+  const st = S.settings;
+  openSheet('<h2>Ajustes</h2>' +
+    '<div class="field"><label for="s_name">Seu nome</label><input id="s_name" class="inp" value="' + esc(st.name) + '" autocomplete="given-name"></div>' +
+    '<div class="grid2"><div class="field"><label for="s_pages">Páginas por dia</label><input id="s_pages" class="inp" inputmode="numeric" value="' + st.pages + '"></div>' +
+    '<div class="field"><label for="s_min">Minutos por dia</label><input id="s_min" class="inp" inputmode="numeric" value="' + st.minutes + '"></div></div>' +
+    '<div class="field"><label for="s_pledge">Seu compromisso se falhar</label><textarea id="s_pledge" class="inp" placeholder="Ex.: pago um jantar para meu irmão">' + esc(st.pledge) + '</textarea></div>' +
+    '<div class="field"><label>Hábitos rápidos</label><div class="stack" style="gap:6px">' + S.habits.map(x => '<div class="row"><span class="grow">' + esc(x.t) + '</span><button class="iconbtn" style="width:36px;height:36px" data-a="habdel" data-id="' + x.id + '" aria-label="Remover hábito">' + icon('trash') + '</button></div>').join('') +
+    '<div class="row"><input id="s_hab" class="inp grow" placeholder="Novo hábito" maxlength="40"><button class="btn ghost" data-a="habadd">Adicionar</button></div></div></div>' +
+    '<div class="field"><label>Backup dos dados</label><div class="grid2"><button class="btn ghost" data-a="exportbk">Exportar</button><button class="btn ghost" data-a="importbk">Importar</button></div><input id="bkfile" type="file" accept="application/json,.json" hidden data-ch="bkfile"></div>' +
+    '<button class="btn block" data-a="settingssave">Salvar</button>' +
+    '<div class="faint" id="savestat" style="font-size:12.5px;text-align:center">' + statusText() + '</div>' +
+    '<button class="btn danger block" data-a="resetask">Apagar tudo e recomeçar</button>');
+}
+function eventSheet(id, d) {
+  const e = id ? S.events.find(x => x.id === id) : {t: '', d: d || calSel, h: '', pl: ''};
+  openSheet('<h2>' + (id ? 'Editar compromisso' : 'Novo compromisso') + '</h2>' +
+    '<div class="field"><label for="e_t">O que é</label><input id="e_t" class="inp" value="' + esc(e.t) + '" maxlength="80"></div>' +
+    '<div class="grid2"><div class="field"><label for="e_d">Data</label><input id="e_d" type="date" class="inp" value="' + e.d + '"></div><div class="field"><label for="e_h">Hora</label><input id="e_h" type="time" class="inp" value="' + esc(e.h || '') + '"></div></div>' +
+    '<div class="field"><label for="e_p">Local (opcional)</label><input id="e_p" class="inp" value="' + esc(e.pl || '') + '" maxlength="80"></div>' +
+    '<button class="btn block" data-a="evsave" data-id="' + (id || '') + '">Salvar</button>' + (id ? '<button class="btn danger block" data-a="evdel" data-id="' + id + '">Excluir</button>' : ''));
+}
+function goalSheet(id) {
+  const g = id ? S.goals.find(x => x.id === id) : {t: '', area: 'Saúde', start: 0, cur: 0, target: '', unit: '', due: ''};
+  openSheet('<h2>' + (id ? 'Editar meta' : 'Nova meta') + '</h2>' +
+    '<div class="field"><label for="g_t">Meta</label><input id="g_t" class="inp" value="' + esc(g.t) + '" placeholder="Ex.: Ler 12 livros no ano" maxlength="80"></div>' +
+    '<div class="grid2"><div class="field"><label for="g_a">Área</label><select id="g_a" class="inp">' + optList(['Saúde', 'Estudo', 'Carreira', 'Finanças', 'Pessoal'].map(x => [x, x]), g.area) + '</select></div>' +
+    '<div class="field"><label for="g_u">Unidade</label><input id="g_u" class="inp" value="' + esc(g.unit) + '" placeholder="livros, kg, R$"></div></div>' +
+    '<div class="grid3"><div class="field"><label for="g_s">Começo</label><input id="g_s" class="inp" inputmode="decimal" value="' + g.start + '"></div><div class="field"><label for="g_c">Agora</label><input id="g_c" class="inp" inputmode="decimal" value="' + g.cur + '"></div><div class="field"><label for="g_g">Alvo</label><input id="g_g" class="inp" inputmode="decimal" value="' + g.target + '"></div></div>' +
+    '<div class="field"><label for="g_d">Prazo</label><input id="g_d" type="date" class="inp" value="' + esc(g.due || '') + '"></div>' +
+    '<button class="btn block" data-a="goalsave" data-id="' + (id || '') + '">Salvar</button>' + (id ? '<button class="btn danger block" data-a="goaldel" data-id="' + id + '">Excluir</button>' : ''));
+}
+function goalProgSheet(id) {
+  const g = S.goals.find(x => x.id === id);
+  openSheet('<h2>' + esc(g.t) + '</h2><div class="muted">Alvo: ' + fmtN(g.target, 1) + ' ' + esc(g.unit || '') + '</div>' +
+    '<div class="field"><label for="gp_v">Valor atual (' + esc(g.unit || 'número') + ')</label><input id="gp_v" class="inp" inputmode="decimal" value="' + g.cur + '"></div>' +
+    '<button class="btn block" data-a="goalprogsave" data-id="' + id + '">Atualizar</button>');
+}
+function bookSheet(id) {
+  const b = id ? S.books.find(x => x.id === id) : {t: '', a: '', pages: '', cur: 0, st: S.books.some(x => x.st === 'reading') ? 'queue' : 'reading'};
+  openSheet('<h2>' + (id ? 'Editar livro' : 'Novo livro') + '</h2>' +
+    '<div class="field"><label for="b_t">Título</label><input id="b_t" class="inp" value="' + esc(b.t) + '" maxlength="90"></div>' +
+    '<div class="field"><label for="b_a">Autor</label><input id="b_a" class="inp" value="' + esc(b.a) + '" maxlength="60"></div>' +
+    '<div class="grid2"><div class="field"><label for="b_p">Total de páginas</label><input id="b_p" class="inp" inputmode="numeric" value="' + b.pages + '"></div><div class="field"><label for="b_c">Página atual</label><input id="b_c" class="inp" inputmode="numeric" value="' + b.cur + '"></div></div>' +
+    '<div class="field"><label for="b_s">Situação</label><select id="b_s" class="inp">' + optList([['reading', 'Lendo agora'], ['queue', 'Na fila'], ['done', 'Terminado']], b.st) + '</select></div>' +
+    '<button class="btn block" data-a="booksave" data-id="' + (id || '') + '">Salvar</button>' + (id ? '<button class="btn danger block" data-a="bookdel" data-id="' + id + '">Excluir</button>' : ''));
+}
+function readSheet(auto) {
+  const cb = S.books.find(b => b.st === 'reading'); if (!cb) return;
+  const mins = auto ? Math.max(1, Math.round(tmElapsed() / 60000)) : '';
+  openSheet('<h2>' + (auto ? 'Boa leitura. E agora?' : 'Registrar leitura') + '</h2><div class="muted">' + esc(cb.t) + ' · você estava na página ' + cb.cur + '</div>' +
+    '<div class="grid2"><div class="field"><label for="r_s">Parei na página</label><input id="r_s" class="inp" inputmode="numeric" value="' + (auto ? '' : cb.cur) + '" placeholder="' + (cb.cur + st_pages()) + '"></div>' +
+    '<div class="field"><label for="r_m">Minutos lidos</label><input id="r_m" class="inp" inputmode="numeric" value="' + mins + '"></div></div>' +
+    '<button class="btn block" data-a="readsave" data-auto="' + (auto ? 1 : 0) + '">Registrar</button>');
+}
+const st_pages = () => S.settings.pages;
+function tplSheet(id) {
+  const t = id ? S.templates.find(x => x.id === id) : {name: '', ex: []};
+  openSheet('<h2>' + (id ? 'Editar treino' : 'Novo treino') + '</h2>' +
+    '<div class="field"><label for="t_n">Nome</label><input id="t_n" class="inp" value="' + esc(t.name) + '" placeholder="Ex.: Peito e tríceps" maxlength="40"></div>' +
+    '<div class="field"><label for="t_e">Exercícios, um por linha: nome | séries x repetições</label><textarea id="t_e" class="inp" style="min-height:150px" placeholder="Supino reto | 4x8">' + esc(t.ex.map(e => e.n + ' | ' + e.s + 'x' + e.r).join('\n')) + '</textarea></div>' +
+    '<button class="btn block" data-a="tplsave" data-id="' + (id || '') + '">Salvar</button>' + (id ? '<button class="btn danger block" data-a="tpldel" data-id="' + id + '">Excluir</button>' : ''));
+}
+function planSheet() {
+  const opts = [['', 'Descanso']].concat(S.templates.map(t => [t.id, t.name]));
+  openSheet('<h2>Sua semana de treino</h2><div class="muted" style="font-size:14px">Dias com treino entram na regra do dia.</div>' +
+    [1, 2, 3, 4, 5, 6, 0].map(d => '<div class="row"><label for="pl_' + d + '" style="width:64px;font-weight:600">' + DOW3[d] + '</label><select id="pl_' + d + '" class="inp">' + optList(opts, S.settings.gym[d] || '') + '</select></div>').join('') +
+    '<button class="btn block" data-a="plansave">Salvar</button>');
+}
+function weightSheet() {
+  const last = S.weights.slice().sort((a, b) => a.date < b.date ? -1 : 1).pop();
+  openSheet('<h2>Registrar peso</h2><div class="grid2"><div class="field"><label for="w_k">Peso (kg)</label><input id="w_k" class="inp" inputmode="decimal" value="' + (last ? last.kg : '') + '"></div><div class="field"><label for="w_d">Data</label><input id="w_d" type="date" class="inp" value="' + dkey() + '"></div></div><button class="btn block" data-a="weightsave">Salvar</button>');
+}
+
+/* ---------- sessão de treino ---------- */
+function sessStart(tid) {
+  const t = S.templates.find(x => x.id === tid); if (!t) return;
+  sess = {date: dkey(), tid, name: t.name, start: Date.now(), ex: t.ex.map(e => {
+    const last = lastSets(e.n);
+    return {n: e.n, r: e.r, sets: Array.from({length: e.s}, (_, i) => ({kg: last ? (last[i] || last[last.length - 1]).kg : '', r: e.r, done: false}))};
+  })};
+  persistSess(); sessSheet();
+}
+function sessSheet() {
+  let h = '<div class="row sp"><div class="grow"><h2>' + esc(sess.name) + '</h2><div class="mono muted" id="sclock" style="font-size:14px">' + fmtClock(Date.now() - sess.start) + '</div></div><button class="btn sm ghost" data-a="sessquit">Sair</button></div>';
+  sess.ex.forEach((e, ei) => {
+    const last = lastSets(e.n);
+    h += '<div class="card"><div class="row sp"><b>' + esc(e.n) + '</b><span class="faint mono" style="font-size:12.5px">' + (last ? 'antes: ' + last[0].kg + ' kg × ' + last[0].r : 'primeira vez') + '</span></div>';
+    e.sets.forEach((s, si) => {
+      h += '<div class="setrow"><span class="n">' + (si + 1) + '</span><input class="inp" inputmode="decimal" data-sk="' + ei + ':' + si + ':kg" value="' + esc(s.kg) + '" placeholder="kg" aria-label="Carga em kg, série ' + (si + 1) + '"><input class="inp" inputmode="numeric" data-sk="' + ei + ':' + si + ':r" value="' + esc(s.r) + '" placeholder="reps" aria-label="Repetições, série ' + (si + 1) + '">' +
+        '<button class="check ' + (s.done ? 'on' : '') + '" data-a="sdone" data-e="' + ei + '" data-s="' + si + '" aria-label="Série feita">' + icon('check') + '</button></div>';
+    });
+    h += '</div>';
+  });
+  h += '<button class="btn block" data-a="sessfinish">Concluir treino</button>';
+  openSheet(h, true);
+}
+</script>
+<script>
+'use strict';
+/* ---------- tela ligada ---------- */
+let wl = null;
+async function lockScreen() { try { if (navigator.wakeLock && !wl) { wl = await navigator.wakeLock.request('screen'); wl.addEventListener('release', () => { wl = null; }); } } catch (e) {} }
+function unlockScreen() { try { if (wl) wl.release(); } catch (e) {} wl = null; }
+const T0 = () => dkey();
+const int = v => Math.max(0, Math.round(num(v)));
+function stashSettings() {
+  const st = S.settings;
+  if ($('#s_name')) st.name = val('s_name').trim().slice(0, 30);
+  if ($('#s_pages')) st.pages = Math.max(1, int(val('s_pages')) || 10);
+  if ($('#s_min')) st.minutes = Math.max(1, int(val('s_min')) || 20);
+  if ($('#s_pledge')) st.pledge = val('s_pledge').trim().slice(0, 200);
+}
+function done(msg) { save(); closeSheet(); render(); if (msg) toast(msg); }
+
+const A = {
+  tab(d) { S.tab = d.t; render(); window.scrollTo(0, 0); },
+  close() { closeSheet(); },
+  settings() { settingsSheet(); },
+  settingssave() { stashSettings(); done('Ajustes salvos'); },
+  habadd() { stashSettings(); const t = val('s_hab').trim(); if (t) S.habits.push({id: uid(), t}); save(); settingsSheet(); },
+  habdel(d) { stashSettings(); S.habits = S.habits.filter(x => x.id !== d.id); save(); settingsSheet(); },
+  hab(d) { const T = T0(), l = S.hlog[T] || (S.hlog[T] = []), i = l.indexOf(d.id); if (i >= 0) l.splice(i, 1); else l.push(d.id); save(); render(); },
+  mood(d) { const T = T0(), m = S.mood[T] || {v: 0, t: ''}; m.v = m.v === +d.v ? 0 : +d.v; S.mood[T] = m; save(); render(); },
+  sampleclear() { const b = blank(); b.settings = S.settings; b.templates = S.templates; b.habits = S.habits; b.tab = S.tab; S = b; save(); render(); toast('Tudo limpo. Comece do seu jeito.'); },
+  samplekeep() { S.sample = false; save(); render(); },
+  resetask() { confirmSheet('Apagar tudo?', 'Metas, compromissos, leitura, treinos e peso serão apagados deste app. Isso não tem volta.', 'Apagar tudo', 'resetdo'); },
+  resetdo() { const t = S.tab; S = blank(); S.tab = t; done('Tudo apagado'); },
+  exportbk() {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(S)], {type: 'application/json'}));
+    a.download = 'prumo-backup-' + T0() + '.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 3000); toast('Backup gerado');
+  },
+  importbk() { const f = $('#bkfile'); if (f) f.click(); },
+
+  /* agenda */
+  selday(d) { calSel = d.k; calMonth = d.k.slice(0, 8) + '01'; render(); },
+  calprev() { const d = pk(calMonth); d.setMonth(d.getMonth() - 1); calMonth = dkey(d).slice(0, 8) + '01'; render(); },
+  calnext() { const d = pk(calMonth); d.setMonth(d.getMonth() + 1); calMonth = dkey(d).slice(0, 8) + '01'; render(); },
+  evnew(d) { eventSheet(null, d.k); },
+  evedit(d) { eventSheet(d.id); },
+  evsave(d) {
+    const t = val('e_t').trim(), dt = val('e_d');
+    if (!t) return toast('Dê um nome ao compromisso');
+    if (!dt) return toast('Escolha a data');
+    const o = {t, d: dt, h: val('e_h'), pl: val('e_p').trim()};
+    if (d.id) Object.assign(S.events.find(x => x.id === d.id), o); else S.events.push(Object.assign({id: uid(), done: false}, o));
+    calSel = dt; calMonth = dt.slice(0, 8) + '01'; done('Compromisso salvo');
+  },
+  evdel(d) { S.events = S.events.filter(x => x.id !== d.id); done('Compromisso excluído'); },
+  evdone(d) { const e = S.events.find(x => x.id === d.id); e.done = !e.done; save(); render(); },
+
+  /* metas */
+  goalnew() { goalSheet(); },
+  goaledit(d) { goalSheet(d.id); },
+  goalsave(d) {
+    const t = val('g_t').trim(); if (!t) return toast('Dê um nome à meta');
+    if (val('g_g') === '') return toast('Informe o alvo');
+    const o = {t, area: val('g_a'), unit: val('g_u').trim(), start: num(val('g_s')), cur: num(val('g_c')), target: num(val('g_g')), due: val('g_d')};
+    if (o.target === o.start) return toast('O alvo precisa ser diferente do começo');
+    if (d.id) Object.assign(S.goals.find(x => x.id === d.id), o); else S.goals.push(Object.assign({id: uid(), created: T0()}, o));
+    done('Meta salva');
+  },
+  goaldel(d) { S.goals = S.goals.filter(x => x.id !== d.id); done('Meta excluída'); },
+  goalprog(d) { goalProgSheet(d.id); },
+  goalprogsave(d) { const g = S.goals.find(x => x.id === d.id); g.cur = num(val('gp_v')); done(goalPct(g) >= 1 ? 'Meta concluída. Parabéns.' : 'Progresso atualizado'); },
+
+  /* leitura */
+  booknew() { bookSheet(); },
+  bookedit(d) { bookSheet(d.id); },
+  booksave(d) {
+    const t = val('b_t').trim(), pages = int(val('b_p')); if (!t) return toast('Informe o título'); if (!pages) return toast('Informe o total de páginas');
+    const o = {t, a: val('b_a').trim(), pages, cur: Math.min(int(val('b_c')), pages), st: val('b_s')};
+    if (o.st === 'done') { o.cur = pages; o.end = T0(); }
+    if (o.st === 'reading') S.books.forEach(b => { if (b.st === 'reading' && b.id !== d.id) b.st = 'queue'; });
+    if (d.id) Object.assign(S.books.find(x => x.id === d.id), o); else S.books.push(Object.assign({id: uid()}, o));
+    done('Livro salvo');
+  },
+  bookdel(d) { S.books = S.books.filter(x => x.id !== d.id); done('Livro removido'); },
+  tstart() { const t = S.timer; if (!t) S.timer = {run: true, start: Date.now(), acc: 0}; else if (!t.run) { t.run = true; t.start = Date.now(); } lockScreen(); save(); render(); },
+  tpause() { const t = S.timer; if (t && t.run) { t.acc += Date.now() - t.start; t.run = false; } unlockScreen(); save(); render(); },
+  tfinish() { A.tpause(); readSheet(true); },
+  tcancel() { confirmSheet('Descartar o cronômetro?', 'O tempo acumulado até agora não será contado.', 'Descartar', 'tcanceldo'); },
+  tcanceldo() { S.timer = null; unlockScreen(); done(); },
+  readmanual() { readSheet(false); },
+  readsave(d) {
+    const cb = S.books.find(b => b.st === 'reading'); if (!cb) return;
+    const stop = Math.min(int(val('r_s')), cb.pages), min = int(val('r_m'));
+    if (stop <= cb.cur) return toast('A página precisa ser maior que ' + cb.cur);
+    if (!min) return toast('Informe quantos minutos você leu');
+    const T = T0(), r = S.reads[T] || (S.reads[T] = {p: 0, m: 0});
+    r.p += stop - cb.cur; r.m += min; cb.cur = stop;
+    let msg = dayInfo(T).readOK ? 'Leitura do dia cumprida.' : 'Leitura registrada. Faltam ' + Math.max(0, S.settings.pages - r.p) + ' págs ou ' + Math.max(0, S.settings.minutes - r.m) + ' min.';
+    if (cb.cur >= cb.pages) {
+      cb.st = 'done'; cb.end = T; const nx = S.books.find(b => b.st === 'queue'); if (nx) nx.st = 'reading';
+      const g = S.goals.find(x => /livro/i.test(x.unit || '')); if (g) g.cur += 1;
+      msg = 'Livro terminado. ' + (nx ? 'Próximo: ' + nx.t + '.' : 'Adicione o próximo.');
+    }
+    S.timer = null; unlockScreen(); done(msg);
+  },
+
+  /* treino */
+  plan() { planSheet(); },
+  plansave() { const g = {}; [0, 1, 2, 3, 4, 5, 6].forEach(d => { const v = val('pl_' + d); if (v) g[d] = v; }); S.settings.gym = g; done('Semana atualizada'); },
+  tplnew() { tplSheet(); },
+  tpledit(d) { tplSheet(d.id); },
+  tplsave(d) {
+    const name = val('t_n').trim(); if (!name) return toast('Dê um nome ao treino');
+    const ex = val('t_e').split('\n').map(l => l.trim()).filter(Boolean).map(l => {
+      const m = l.match(/^(.*?)\s*\|\s*(\d+)\s*[xX×]\s*(\d+)/);
+      return m ? {n: m[1].trim(), s: Math.min(10, +m[2]), r: Math.min(100, +m[3])} : {n: l.split('|')[0].trim(), s: 3, r: 10};
+    }).filter(e => e.n);
+    if (!ex.length) return toast('Adicione ao menos um exercício');
+    if (d.id) Object.assign(S.templates.find(x => x.id === d.id), {name, ex}); else S.templates.push({id: uid(), name, ex});
+    done('Treino salvo');
+  },
+  tpldel(d) { S.templates = S.templates.filter(x => x.id !== d.id); Object.keys(S.settings.gym).forEach(k => { if (S.settings.gym[k] === d.id) delete S.settings.gym[k]; }); done('Treino excluído'); },
+  sessstart(d) { sessStart(d.id); lockScreen(); },
+  sessresume() { try { sess = JSON.parse(localStorage.getItem(SESS)); } catch (e) { sess = null; } if (sess) { sessSheet(); lockScreen(); } else closeSheet(); },
+  sdone(d, el) { const s = sess.ex[+d.e].sets[+d.s]; s.done = !s.done; el.classList.toggle('on', s.done); persistSess(); },
+  sessquit() {
+    if (!sess) return closeSheet();
+    openSheet('<h2>Sair do treino?</h2><p class="muted">Suas séries ficam guardadas e você pode retomar depois.</p><div class="stack"><button class="btn" data-a="sessback">Voltar ao treino</button><button class="btn ghost" data-a="sessleave">Sair e retomar depois</button><button class="btn danger" data-a="sessdiscard">Descartar treino</button></div>');
+  },
+  sessback() { sessSheet(); },
+  sessleave() { closeSheet(); render(); },
+  sessdiscard() { sess = null; persistSess(); unlockScreen(); closeSheet(); render(); },
+  sessfinish() {
+    const ex = sess.ex.map(e => ({n: e.n, sets: e.sets.filter(s => s.done && num(s.kg) >= 0 && int(s.r) > 0).map(s => ({kg: num(s.kg), r: int(s.r)}))})).filter(e => e.sets.length);
+    if (!ex.length) return toast('Marque ao menos uma série como feita');
+    const prs = ex.filter(e => { const b = bestKg(e.n); return b > 0 && Math.max(...e.sets.map(s => s.kg)) > b; }).length;
+    S.workouts.push({id: uid(), date: sess.date, tid: sess.tid, name: sess.name, min: Math.max(1, Math.round((Date.now() - sess.start) / 60000)), ex});
+    S.workouts.sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : 0);
+    sess = null; persistSess(); unlockScreen();
+    done('Treino salvo' + (prs ? '. ' + prs + (prs > 1 ? ' recordes' : ' recorde') + ' de carga.' : '.'));
+  },
+
+  /* evolução */
+  weightnew() { weightSheet(); },
+  weightsave() {
+    const kg = num(val('w_k')), d = val('w_d') || T0(); if (kg < 20 || kg > 400) return toast('Informe um peso válido em kg');
+    S.weights = S.weights.filter(w => w.date !== d); S.weights.push({date: d, kg: Math.round(kg * 10) / 10});
+    const g = S.goals.find(x => (x.unit || '').toLowerCase() === 'kg'); if (g && d === T0()) g.cur = Math.round(kg * 10) / 10;
+    done('Peso registrado');
+  }
+};
+
+/* ---------- eventos ---------- */
+document.addEventListener('click', e => {
+  const tt = e.target.closest('[data-tt]');
+  if (tt) { const c = tt.closest('.card'), box = c && c.querySelector('.tt'); if (box) box.textContent = tt.getAttribute('data-tt'); return; }
+  const el = e.target.closest('[data-a]'); if (!el) return;
+  const f = A[el.dataset.a]; if (f) f(el.dataset, el);
+});
+document.addEventListener('input', e => {
+  const k = e.target.dataset && e.target.dataset.sk;
+  if (k && sess) { const [ei, si, f] = k.split(':'); sess.ex[+ei].sets[+si][f] = e.target.value; persistSess(); }
+});
+document.addEventListener('change', e => {
+  const c = e.target.dataset && e.target.dataset.ch; if (!c) return;
+  if (c === 'bkfile') {
+    const f = e.target.files && e.target.files[0]; if (!f) return;
+    f.text().then(t => {
+      const o = JSON.parse(t); if (!o || typeof o !== 'object' || !o.settings) throw new Error('x');
+      S = normalize(o); S.sample = false; done('Backup importado');
+    }).catch(() => toast('Arquivo de backup inválido'));
+  }
+  else if (c === 'mnote') { const T = T0(), m = S.mood[T] || {v: 0, t: ''}; m.t = e.target.value.slice(0, 140); S.mood[T] = m; save(); }
+  else if (c === 'wnote') { S.reviews[weekStart(T0())] = e.target.value.slice(0, 400); save(); }
+  else if (c === 'exsel') { exSel = e.target.value; render(); }
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('#sheet-root').classList.contains('open') && !sess) closeSheet(); });
+const idle = () => !$('#sheet-root').classList.contains('open') && !(document.activeElement && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName));
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { if (idle()) render(); pull(); if (S.timer && S.timer.run) lockScreen(); } });
+setInterval(tickTimer, 1000);
+setInterval(() => { if (!document.hidden && S.tab === 'hoje' && idle()) render(); }, 60000);
+
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+render();
+initDb();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+PRUMO - como colocar no ar
+
+1. Abra https://app.netlify.com/drop no computador (ou no celular) e arraste esta pasta (ou o arquivo .zip) para a página.
+2. O Netlify gera um link com https. Abra esse link no celular.
+3. iPhone (Safari): botão Compartilhar > "Adicionar à Tela de Início".
+   Android (Chrome): menu ⋮ > "Instalar app" / "Adicionar à tela inicial".
+4. Use sempre o app da tela inicial. No iPhone, o app da tela inicial guarda os dados separado do Safari.
+
+Seus dados ficam só no aparelho. Em Ajustes > Backup dos dados há "Exportar" e "Importar"
+para fazer cópia ou trocar de celular.
